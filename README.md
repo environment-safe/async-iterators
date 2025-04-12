@@ -12,7 +12,7 @@ Usage
 
 Documentation is only provided for async/await and iterator usage, consult the [tests](test/test.mjs) if you need something different. The main functions return a promise that is also an iterable, upon successful iteration the promise will resolve to the values returned.
 
-###`.map(Iterable[, options[, handlerFn, callbackFn]])`
+### `.map(Iterable[, options[, handlerFn, callbackFn]])`
 
 An example of an identity mapping:
 
@@ -28,7 +28,7 @@ An example of an identity mapping:
     // finalValue deep equals test
 ```
 
-###`.forEach(Iterable[, handlerFn, callbackFn])`
+### `.forEach(Iterable[, handlerFn, callbackFn])`
 
  Iterate over all items in `iterable`
 
@@ -41,7 +41,7 @@ An example of an identity mapping:
     }
 ```
 
-###`.forAll(Iterable[, handlerFn, callbackFn])`
+### `.forAll(Iterable[, handlerFn, callbackFn])`
 
  Iterate over all items in `iterable` at once, then buffer in the iterator
 
@@ -55,13 +55,13 @@ An example of an identity mapping:
     //this will unwind all 
 ```
 
-###`.forEachBatch(Iterable[, handler, callback])`
+### `.forEachBatch(Iterable[, handler, callback])`
 
-Iterate over some items in `iterable` at once, then buffer in the iterator with a maximum limit to the number of items being fetched at any given time.
+Iterate over some items in `iterable` at once, then buffer in the iterator with a maximum limit(in this case `8`) to the number of items being fetched at any given time.
 
 ```js
     import { forEachBatch } from 'async-iterators';
-    const result = forEachBatch(iterable);
+    const result = forEachBatch(iterable, 8);
     let item = await result.next();
     while(!item.done){
         item = await result.next();
