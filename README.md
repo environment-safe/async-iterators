@@ -46,8 +46,8 @@ An example of an identity mapping:
  Iterate over all items in `iterable` at once, then buffer in the iterator
 
 ```js
-    import { forEach } from 'async-iterators';
-    const result = forEach(iterable);
+    import { forAll } from 'async-iterators';
+    const result = forAll(iterable);
     let item = await result.next();
     while(!item.done){
         item = await result.next();
@@ -60,7 +60,7 @@ An example of an identity mapping:
 Iterate over some items in `iterable` at once, then buffer in the iterator with a maximum limit to the number of items being fetched at any given time.
 
 ```js
-    import { forEach } from 'async-iterators';
+    import { forEachBatch } from 'async-iterators';
     const result = forEachBatch(iterable);
     let item = await result.next();
     while(!item.done){
