@@ -1,67 +1,72 @@
-<span>
-    
-environment-safe-template
-=========================
+@environment-safe/async-iterators
+=================================
 
-This setup normalizes a **from source** usage for all environments ([node](https://nodejs.org/)/[browser](https://developer.mozilla.org/en-US/docs/Web/JavaScript)+[modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)/[commonjs](https://en.wikipedia.org/wiki/CommonJS)). It [babel]() compiles the commonjs files into `/dist` and it (from [jsdoc](https://jsdoc.app/)) compiles both docs (in `/docs`) and typescript types (alongside the source in `/src`).
+This is a buildless ESM port of [async-arrays](https://www.npmjs.com/package/async-arrays) and [async-objects](https://www.npmjs.com/package/async-objects) which no longer maintains stack cohesion in callbacks or supports extending prototypes (If you need those features please use an older version), but now supports usage with async/await keywords and iterators in addition to the older callback syntax for porting convenience.
 
-It sets up a single test that is used in headless, browser and node modes, has a sane set of lint rules and husky bindings to make sure you:
+It supports parallel iteration, pooled iteration or synchronous iteration in all modes. It also offers `IteratorPool`: a generic class for pooling requests from iterators or fetching in parallel.
 
-1) don't have to do any of it manually
-2) it all stays up to date
-3) You write in a single format
-4) The source you are writing is executable as-is in node + the browser
-5) 1 file to rule them all
-
-This allows you to use either source tree for compilation as well.
-
-Requirements
-------------
-
-You need a copy of [`jq`](https://jqlang.github.io/jq/) installed in order to initialize
+(Does not currently support .require()/.cjs)
 
 Usage
 -----
 
-[fork as a template in github]( https://docs.github.com/en/enterprise-server@2.22/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template#creating-a-repository-from-a-template ) then clone it locally
+Documentation is only provided for async/await and iterator usage, consult the [tests](test/test.mjs) if you need something different. The main functions return a promise that is also an iterable, upon successful iteration the promise will resolve to the values returned.
 
-OR
+###`.map(Iterable[, options[, handlerFn, callbackFn]])`
 
-use the [github cli](https://cli.github.com/) to create a template from the repo
-```bash
-    gh repo create --template="@environment-safe/template" <new-repo-name>
+An example of an identity mapping:
+
+```js
+    import { map } from 'async-iterators';
+    const result = map(iterable);
+    let item = await result.next();
+    while(!item.done){
+        item.return(item.value); //required if !options.autoincrement
+        item = await result.next();
+    }
+    const finalValue = await result;
+    // finalValue deep equals test
 ```
 
-OR
+###`.forEach(Iterable[, handlerFn, callbackFn])`
 
-Use degit to copy the repo with no history
-```bash
-    mkdir <new-repo-name>
-    cd <new-repo-name>
-    npx degit environment-safe/template
-    git init
+ Iterate over all items in `iterable`
+
+```js
+    import { forEach } from 'async-iterators';
+    const result = forEach(iterable);
+    let item = await result.next();
+    while(!item.done){
+        item = await result.next();
+    }
 ```
 
-THEN
+###`.forAll(Iterable[, handlerFn, callbackFn])`
 
-Once you've done that, change directories into the project directory and run `./initialize` which will configure your `package.json`, your `LICENSE` and your `README.md`(this file) and remove any artifacts as well as itself and stage the changes for commit.
+ Iterate over all items in `iterable` at once, then buffer in the iterator
 
-LAST
+```js
+    import { forEach } from 'async-iterators';
+    const result = forEach(iterable);
+    let item = await result.next();
+    while(!item.done){
+        item = await result.next();
+    }
+    //this will unwind all 
+```
 
-When you commit, the rest of the artifacts will be generated and added to your commit.
+###`.forEachBatch(Iterable[, handler, callback])`
 
-When you come back this will all be gone. Good Luck!
+Iterate over some items in `iterable` at once, then buffer in the iterator with a maximum limit to the number of items being fetched at any given time.
 
-Roadmap
--------
-
-- [X] - submodule for minimal project footprint
-- [ ] - support windows development
-- [ ] - support multiple licenses
-- [ ] - support electron
-- [ ] - support cordova
-
-</span>
+```js
+    import { forEach } from 'async-iterators';
+    const result = forEachBatch(iterable);
+    let item = await result.next();
+    while(!item.done){
+        item = await result.next();
+    }
+```
 
 Testing
 -------

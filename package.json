@@ -1,6 +1,6 @@
 {
-    "name": "@environment-safe/template",
-    "version": "0.0.2",
+    "name": "@environment-safe/async-iterators",
+    "version": "0.0.1",
     "type": "module",
     "main": "dist/index.mjs",
     "module": "src/index.mjs",
@@ -23,17 +23,17 @@
             "require": "./dist/index.cjs"
         }
     },
-    "homepage": "https://github.com/environment-safe/template",
-    "description": "A template for buildless module development",
+    "homepage": "https://github.com/environment-safe/async-iterators",
+    "description": "Buildless ESM asynchronous iteration Fns",
     "keywords": [],
     "author": "Abbey Hawk Sparrow <@khrome> (http://patternweaver.com)",
     "contributors": [],
     "repository": {
         "type": "git",
-        "url": "git@github.com:environment-safe/template.git"
+        "url": "git@github.com:environment-safe/async-iterators.git"
     },
     "bugs": {
-        "url": "https://github.com/environment-safe/template/issues"
+        "url": "https://github.com/environment-safe/async-iterators/issues"
     },
     "moka": {
         "firefox": {
@@ -54,7 +54,7 @@
                 "type": "webkit"
             }
         },
-        "stub": "src/stub.mjs",
+        "stub": "node_modules/@open-automaton/moka/src/stub.mjs",
         "stubs": [
             "express",
             "module",
@@ -64,6 +64,7 @@
         ],
         "shims": {
             "chai": "node_modules/chai/chai.js",
+            "@environment-safe/logger": "node_modules/@environment-safe/logger/src/index.mjs",
             "browser-or-node": "node_modules/browser-or-node/src/index.js"
         }
     },
@@ -86,7 +87,7 @@
     "scripts": {
         "lint": "eslint src/*.mjs test/*.mjs",
         "test": "npm run import-test; npm run browser-test; npm run require-test",
-        "import-test": "mocha test/test.mjs",
+        "import-test": "moka test/test.mjs",
         "require-test": "mocha test/test.cjs",
         "build-commonjs": "./node_modules/@environment-safe/commonjs-builder/bin/build.mjs",
         "local-server": "open 'http://localhost:8085/' ; npx http-server -p 8085",
@@ -102,6 +103,7 @@
         "prepare": "husky install"
     },
     "dependencies": {
+        "@environment-safe/logger": "^0.1.0",
         "browser-or-node": "^2.1.1"
     }
 }
